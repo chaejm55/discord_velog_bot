@@ -45,4 +45,19 @@ async def game(ctx, user: str):
         await ctx.send(f'{user} vs {bot}  봇이 이겼습니다.')
 
 
+@bot.command()
+async def embed(ctx):
+    embed = discord.Embed(title="Embed title", description="Embed description", color=0x36ccf2)
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/721307978455580742/762760779409129513/img.png")
+    embed.set_image(url="https://cdn.discordapp.com/attachments/721307978455580742/762760779409129513/img.png")
+    embed.add_field(name="field_name1", value="field value1", inline=False)
+    embed.add_field(name="field_name2", value="field value2", inline=False)
+    embed.add_field(name="field_name3", value="field value3", inline=False)
+    embed.add_field(name="field_name4", value="field value4", inline=False)
+    embed.set_footer(text="footer_text", icon_url="https://cdn.discordapp.com/attachments/721307978455580742/762760779409129513/img.png")
+    embed.set_author(name="author_name", url="https://velog.io/@chaejm55", icon_url="https://cdn.discordapp.com/attachments/721307978455580742/762760779409129513/img.png")
+
+    await ctx.send(embed=embed)
+
+
 bot.run(token)
