@@ -60,4 +60,8 @@ async def embed(ctx):
     await ctx.send(embed=embed)
 
 
+@bot.command(usage='test usage', description='test description', help='test help')
+async def test(ctx):
+    await ctx.send("test")
+
 bot.run(token)
