@@ -2,6 +2,7 @@ import discord
 import random
 from discord.ext import commands
 from bs4 import BeautifulSoup
+from discord.ext.commands import MissingRequiredArgument, BadArgument
 import requests
 
 token = '토큰 붙여넣기'
@@ -47,6 +48,23 @@ async def game(ctx, user: str):
         await ctx.send(f'{user} vs {bot}  봇이 이겼습니다.')
 
 
+@game.error  # @<명령어>.error의 형태로 된 데코레이터를 사용한다.
+async def game_error(ctx, error):  # 파라미터에 ctx, error를 필수로 한다.
+    if isinstance(error, MissingRequiredArgument):  # isinstance로 에러에 따라 시킬 작업을 결정한다.
+        await ctx.send("가위/바위/보 중 낼 것을 입력해주세요.")
+        
+
+@bot.command(name="숫자")
+async def num_echo(ctx, user: int):
+    await ctx.send(f"입력한 숫자는 {user}입니다.")
+
+
+@num_echo.error
+async def num_echo_error(ctx, error):
+    if isinstance(error, BadArgument):
+        await ctx.send("정수를 입력 해주세요")
+
+
 @bot.command()
 async def embed(ctx):
     embed = discord.Embed(title="Embed title", description="Embed description", color=0x36ccf2)
@@ -87,7 +105,6 @@ async def crawl(ctx):
     # today_domestic = int(soup.select_one("body > div > div.mainlive_container > div.container > div > div.liveboard_layout > div.liveNumOuter > div.liveNum_today_new > div > ul > li:nth-child(1) > span.data").text)
     today_overseas = int(today[1].text) # 리스트 두 번째 요소 (해외유입)
     accumulate_confirmed = soup.find("div", {"class": "liveNum"}).find("span", {"class": "num"}).text[4:]  # 앞에 (누적) 글자 자르기
-
     embed = discord.Embed(title="국내 코로나 확진자 수 현황", description="http://ncov.mohw.go.kr/ 의 정보를 가져옵니다.", color=0x005666)
     embed.add_field(name="일일 확진자",
                 value=f"총: {today_domestic + today_overseas}, 국내: {today_domestic}, 해외유입: {today_overseas}",
