@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from discord.ext.commands import MissingRequiredArgument, BadArgument
 import requests
 
+
 token = '토큰 붙여넣기'
 bot = commands.Bot(command_prefix='!')  # 봇의 접두사 설정
 
