@@ -1,12 +1,15 @@
 import discord
 import random
+import os
+from dotenv import load_dotenv
 from discord.ext import commands
 from bs4 import BeautifulSoup
 from discord.ext.commands import MissingRequiredArgument, BadArgument
 import requests
 
+load_dotenv()
 
-token = '토큰 붙여넣기'
+token = os.getenv('TOKEN')
 bot = commands.Bot(command_prefix='!')  # 봇의 접두사 설정
 
 
@@ -112,5 +115,17 @@ async def crawl(ctx):
                 inline=False)
     embed.add_field(name="누적 확진자", value=f"{accumulate_confirmed}명", inline=False)
     await ctx.send(embed=embed)
+
+
+@bot.command(aliases=['추방'])
+async def kick_user(ctx, nickname: discord.Member):
+    await nickname.kick()
+    await ctx.send(f"{nickname} 님이 추방되었습니다.")
+
+
+@bot.command(aliases=['차단'])
+async def ban_user(ctx, nickname: discord.Member):
+    await nickname.ban()
+    await ctx.send(f"{nickname} 님이 차단되었습니다.")
 
 bot.run(token)
