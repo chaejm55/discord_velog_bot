@@ -149,4 +149,16 @@ async def role_user(ctx, nickname: discord.Member, role_name):
             return await ctx.send(f"{nickname} 님에게 {role_name} 역할이 부여 되었습니다.")
     return await ctx.send(f"{role_name} 역할이 존재하지 않습니다.")
 
+
+@bot.command(aliases=['삭제'])
+async def delete_msg(ctx):
+   msg = await ctx.send("3초 뒤에 삭제 됩니다!")
+   await msg.delete(delay=3)
+
+
+@bot.command(aliases=['수정'])
+async def edit_msg(ctx):
+   msg = await ctx.send("곧 수정 됩니다!")
+   await msg.edit(content="수정 되었습니다!")
+
 bot.run(token)
