@@ -20,6 +20,16 @@ async def on_ready():  # 봇 준비 시 1회 동작하는 부분
     print("Bot is ready")
 
 
+@bot.event
+async def on_raw_reaction_add(payload):
+    banned_emoji = "👎"
+    author = payload.user_id
+    channel = await bot.fetch_channel(payload.channel_id)
+    message = await channel.fetch_message(payload.message_id)
+    if payload.emoji.name == banned_emoji and author != bot.user.id:
+        await message.clear_reaction(banned_emoji)
+
+
 @bot.command()  # 봇 명령어
 async def hello(ctx):  # !hello라고 사용자가 입력하면
     await ctx.send("Hello world")  # 봇이 Hello world!라고 대답함
@@ -152,13 +162,20 @@ async def role_user(ctx, nickname: discord.Member, role_name):
 
 @bot.command(aliases=['삭제'])
 async def delete_msg(ctx):
-   msg = await ctx.send("3초 뒤에 삭제 됩니다!")
-   await msg.delete(delay=3)
+    msg = await ctx.send("3초 뒤에 삭제 됩니다!")
+    await msg.delete(delay=3)
 
 
 @bot.command(aliases=['수정'])
 async def edit_msg(ctx):
-   msg = await ctx.send("곧 수정 됩니다!")
-   await msg.edit(content="수정 되었습니다!")
+    msg = await ctx.send("곧 수정 됩니다!")
+    await msg.edit(content="수정 되었습니다!")
+
+
+@bot.command(name="따봉")
+async def reaction(ctx):
+    await ctx.message.add_reaction('👍')
+
+
 
 bot.run(token)
