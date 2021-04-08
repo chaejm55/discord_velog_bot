@@ -1,3 +1,5 @@
+import asyncio
+
 import discord
 import random
 import os
@@ -176,6 +178,21 @@ async def edit_msg(ctx):
 async def reaction(ctx):
     await ctx.message.add_reaction('👍')
 
+
+@bot.command(name="기다리기")
+async def wait(ctx):
+    timeout = 5
+    send_message = await ctx.send(f'{timeout}초간 기다립니다!')
+
+    def check(m):
+        return m.author == ctx.message.author and m.channel == ctx.message.channel
+
+    try:
+        msg = await bot.wait_for('message', check=check, timeout=timeout)
+    except asyncio.TimeoutError:
+        await ctx.send(f'시간초과 입니다...({timeout}초)')
+    else:
+        await ctx.send(f'{msg.content}메시지를 {timeout}초 안에 입력하셨습니다!')
 
 
 bot.run(token)
