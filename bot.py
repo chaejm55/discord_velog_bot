@@ -51,24 +51,61 @@ async def mining(ctx):
     await ctx.send(', '.join(results) + ' 광물들을 획득하였습니다.')
 
 
+def make_dir(directory_name):
+    try:
+        if not os.path.exists(directory_name):
+            os.makedirs(directory_name)
+    except OSError:
+        print('Error: makedirs()')
+
+
+def add_result(directory_name, user_name, result):
+    file_path = directory_name + '/' + user_name + '.txt'
+    if os.path.exists(file_path):
+        with open(file_path, 'a', encoding='UTF-8') as f:
+            f.write(result)
+    else:
+        with open(file_path, 'w', encoding='UTF-8') as f:
+            f.write(result)
+
+
 @bot.command()
 async def game(ctx, user: str):
     rps_table = ['가위', '바위', '보']
     bot = random.choice(rps_table)
     result = rps_table.index(user) - rps_table.index(bot)
     if result == 0:
+        result_text = f'{user} vs {bot} 비김'
         await ctx.send(f'{user} vs {bot}  비겼습니다.')
     elif result == 1 or result == -2:
+        result_text = f'{user} vs {bot} 승리!'
         await ctx.send(f'{user} vs {bot}  유저가 이겼습니다.')
     else:
+        result_text = f'{user} vs {bot} 패배...'
         await ctx.send(f'{user} vs {bot}  봇이 이겼습니다.')
+
+    directory_name = "game_result"
+    make_dir(directory_name)
+    add_result(directory_name, str(ctx.author), result_text + '\n')
 
 
 @game.error  # @<명령어>.error의 형태로 된 데코레이터를 사용한다.
 async def game_error(ctx, error):  # 파라미터에 ctx, error를 필수로 한다.
     if isinstance(error, MissingRequiredArgument):  # isinstance로 에러에 따라 시킬 작업을 결정한다.
         await ctx.send("가위/바위/보 중 낼 것을 입력해주세요.")
-        
+
+
+@bot.command(name="전적")
+async def game_board(ctx):
+    user_name = str(ctx.author)
+    file_path = "game_result/" + user_name + ".txt"
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="UTF-8") as f:
+            result = f.read()
+        await ctx.send(f'{ctx.author}님의 가위바위보 게임 전적입니다.\n==============================\n' + result)
+    else:
+        await ctx.send(f'{ctx.author}님의 가위바위보 전적이 존재하지 않습니다.')
+
 
 @bot.command(name="숫자")
 async def num_echo(ctx, user: int):
