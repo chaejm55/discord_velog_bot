@@ -8,6 +8,7 @@ from discord.ext import commands
 from bs4 import BeautifulSoup
 from discord.ext.commands import MissingRequiredArgument, BadArgument
 import requests
+import openpyxl
 
 load_dotenv()
 
@@ -230,6 +231,33 @@ async def wait(ctx):
         await ctx.send(f'시간초과 입니다...({timeout}초)')
     else:
         await ctx.send(f'{msg.content}메시지를 {timeout}초 안에 입력하셨습니다!')
+
+
+@bot.command(name="엑셀쓰기")
+async def write_excel(ctx, write_str: str):
+    filename = "discord_bot.xlsx"
+    book = openpyxl.load_workbook(filename)
+    ws = book["discord_bot"]
+    ws.append([str(ctx.author), write_str])
+    book.save(filename)
+    await ctx.send("엑셀 입력 완료!")
+
+
+@bot.command(name="엑셀읽기")
+async def read_excel(ctx):
+    filename = "discord_bot.xlsx"
+    book = openpyxl.load_workbook(filename)
+    ws = book["discord_bot"]
+    result = []
+    for row in ws.rows:
+        if row[0].value == str(ctx.author):
+            result.append(row[1].value)
+    book.close()
+    if result:
+        await ctx.send(f'{ctx.author}님이 엑셀 파일에 입력한 내용들입니다.')
+        await ctx.send('\n'.join(result))
+    else:
+        await ctx.send(f'{ctx.author}님이 엑셀 파일에 입력한 내용이 없습니다.')
 
 
 bot.run(token)
