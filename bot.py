@@ -3,15 +3,20 @@ import os
 from dotenv import load_dotenv
 from discord.ext import commands
 
-load_dotenv()
+load_dotenv(verbose=True)
 
 token = os.getenv('TOKEN')
 bot = commands.Bot(command_prefix='!')  # 봇의 접두사 설정
 
-extensions = ['Game', 'User', 'Msg', 'Util']
+# cogs 폴더의 절대 경로 얻기
+# Pycharm에서 바로 상대 경로를 사용하면 오류가 발생하기 때문에 따로 절대경로를 얻어야한다.
+cogs_path = 'Cogs'
+abs_cogs_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), cogs_path)
 
-for ext in extensions:
-    bot.load_extension(ext)
+# cogs 폴더에 존재하는 cogs(.py파일) 로드
+for ext in os.listdir(abs_cogs_path):
+    if ext.endswith(".py"):
+        bot.load_extension(f"Cogs.{ext.split('.')[0]}")  # .py 부분을 떼고 cog의 이름만 추출
 
 
 @bot.event

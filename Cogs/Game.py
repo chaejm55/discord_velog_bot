@@ -55,8 +55,8 @@ class Game(commands.Cog):
             await ctx.send(f'{user} vs {bot}  봇이 이겼습니다.')
 
         directory_name = "game_result"
-        make_dir(directory_name)
-        add_result(directory_name, str(ctx.author), result_text + '\n')
+        await make_dir(directory_name)
+        await add_result(directory_name, str(ctx.author), result_text + '\n')
 
     @game.error  # @<명령어>.error의 형태로 된 데코레이터를 사용한다.
     async def game_error(self, ctx, error):  # 파라미터에 ctx, error를 필수로 한다.
