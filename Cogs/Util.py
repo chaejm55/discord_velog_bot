@@ -19,7 +19,7 @@ class Util(commands.Cog):
         if response_code == 200:  # 정상 작동(코드 200 반환) 시
             soup = BeautifulSoup(response.content, 'lxml')
         else:  # 오류 발생
-            return await ctx.send("웹 페이지 오류입니다.")
+            return await ctx.send("웹 페이지 오류입니다.")  # 오류 시 바로 종료하도록 함
 
         # element 찾기
 
